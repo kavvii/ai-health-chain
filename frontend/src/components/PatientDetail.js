@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './PatientDetail.css';
 import { apiService } from '../services/apiService';
 import PatientInformation from './PatientInformation';
@@ -49,7 +49,7 @@ const PatientDetail = ({ patientId, onBack }) => {
    * @function fetchPatientData
    * @returns {Promise<void>}
    */
-  const fetchPatientData = async () => {
+  const fetchPatientData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -74,20 +74,21 @@ const PatientDetail = ({ patientId, onBack }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [patientId]);
 
   /**
    * Effect hook: Fetches patient data when component mounts or patientId changes
    * 
    * Dependencies:
    * - patientId: Re-fetch when viewing a different patient
+   * - fetchPatientData: Re-run when fetch function is recreated
    */
   useEffect(() => {
     // Only fetch if a valid patientId is provided
     if (patientId) {
       fetchPatientData();
     }
-  }, [patientId]);
+  }, [patientId, fetchPatientData]);
 
   // Loading state UI
   if (loading) {

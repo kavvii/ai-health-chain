@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ConsentManagement.css';
 import { apiService } from '../services/apiService';
 import { useWeb3 } from '../hooks/useWeb3';
@@ -45,7 +45,7 @@ const ConsentManagement = ({ account }) => {
    * @function fetchConsents
    * @returns {Promise<void>}
    */
-  const fetchConsents = async () => {
+  const fetchConsents = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -62,14 +62,14 @@ const ConsentManagement = ({ account }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus]);
 
   /**
    * Effect hook: Fetches consents whenever the filter status changes
    */
   useEffect(() => {
     fetchConsents();
-  }, [filterStatus]);
+  }, [fetchConsents]);
 
   /**
    * Handles creation of a new consent record

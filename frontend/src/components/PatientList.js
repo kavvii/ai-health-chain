@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './PatientList.css';
 import { apiService } from '../services/apiService';
 import PatientCard from './PatientCard';
@@ -52,7 +52,7 @@ const PatientList = ({ onSelectPatient }) => {
    * @function fetchPatients
    * @returns {Promise<void>}
    */
-  const fetchPatients = async () => {
+  const fetchPatients = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -86,7 +86,7 @@ const PatientList = ({ onSelectPatient }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchTerm]);
 
   /**
    * Effect Hook: Fetches patients when currentPage or searchTerm changes
@@ -95,11 +95,11 @@ const PatientList = ({ onSelectPatient }) => {
    * - User navigates to a different page
    * - User completes a search (after debounce)
    * 
-   * Dependencies: [currentPage, searchTerm]
+   * Dependencies: [currentPage, searchTerm, fetchPatients]
    */
   useEffect(() => {
     fetchPatients();
-  }, [currentPage, searchTerm]);
+  }, [fetchPatients]);
 
   /**
    * Effect Hook: Debounces search input with 500ms delay

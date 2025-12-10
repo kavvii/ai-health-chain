@@ -7,7 +7,6 @@ import ConsentManagement from './components/ConsentManagement';
 import TransactionHistory from './components/TransactionHistory';
 import StatsDashboard from './components/StatsDashboard';
 import { useWeb3 } from './hooks/useWeb3';
-import { apiService } from './services/apiService';
 
 function App() {
   const { account, connectWallet, disconnectWallet, isConnected } = useWeb3();
