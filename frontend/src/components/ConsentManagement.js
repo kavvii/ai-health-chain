@@ -2,70 +2,149 @@ import React, { useState, useEffect } from 'react';
 import './ConsentManagement.css';
 import { apiService } from '../services/apiService';
 import { useWeb3 } from '../hooks/useWeb3';
+import ConcentCard from './ConcentCard';
 
+/**
+ * ConsentManagement Component
+ * 
+ * Manages patient data sharing consents with blockchain integration.
+ * Allows users to:
+ * - View all consents with filtering by status (All, Active, Pending)
+ * - Create new consents with digital signatures
+ * - Approve pending consents
+ * 
+ * Requires a connected Web3 wallet (MetaMask) for full functionality.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} props.account - Connected wallet address from MetaMask
+ * 
+ * @example
+ * <ConsentManagement account="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb" />
+ */
 const ConsentManagement = ({ account }) => {
+  // Web3 utilities from custom hook
   const { signMessage } = useWeb3();
-  const [consents, setConsents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [showCreateForm, setShowCreateForm] = useState(false);
+
+  // State management
+  const [consents, setConsents] = useState([]); // Array of consent objects
+  const [loading, setLoading] = useState(true); // Loading state for API calls
+  const [error, setError] = useState(null); // Error messages
+  const [filterStatus, setFilterStatus] = useState('all'); // Active filter: 'all', 'active', or 'pending'
+  const [showCreateForm, setShowCreateForm] = useState(false); // Toggle create form visibility
   const [formData, setFormData] = useState({
-    patientId: '',
-    purpose: '',
+    patientId: '', // Patient identifier
+    purpose: '', // Consent purpose/category
   });
 
-  // TODO: Implement fetchConsents function
-  useEffect(() => {
-    const fetchConsents = async () => {
-      setLoading(true);
-      try {
-        // TODO: Call apiService.getConsents with appropriate filters
-        // TODO: Update consents state
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  /**
+   * Fetches consents from the API based on current filter status
+   * Filters can be: 'all', 'active', or 'pending'
+   * 
+   * @async
+   * @function fetchConsents
+   * @returns {Promise<void>}
+   */
+  const fetchConsents = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Call API with appropriate filter
+      const response = await apiService.getConsents(null, filterStatus === 'all' ? null : filterStatus);
 
+      // Update state with fetched consents
+      setConsents(response.consents || []);
+      setError(null);
+    } catch (err) {
+      // Handle errors gracefully
+      setError(err.message || 'Failed to fetch consents');
+      setConsents([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Effect hook: Fetches consents whenever the filter status changes
+   */
+  useEffect(() => {
     fetchConsents();
   }, [filterStatus]);
 
-  // TODO: Implement createConsent function
-  // This should:
-  // 1. Sign a message using signMessage from useWeb3 hook
-  // 2. Call apiService.createConsent with the consent data and signature
-  // 3. Refresh the consents list
+  /**
+   * Handles creation of a new consent record
+   * 
+   * Process:
+   * 1. Validates wallet connection
+   * 2. Creates a message to sign combining purpose and patient ID
+   * 3. Signs the message using the connected wallet
+   * 4. Sends consent data with signature to the backend
+   * 5. Refreshes consent list on success
+   * 
+   * @async
+   * @function handleCreateConsent
+   * @param {Event} e - Form submit event
+   * @returns {Promise<void>}
+   */
   const handleCreateConsent = async (e) => {
     e.preventDefault();
+
+    // Require wallet connection for consent creation
     if (!account) {
       alert('Please connect your wallet first');
       return;
     }
 
     try {
-      // TODO: Implement consent creation with signature
-      // 1. Create a message to sign (e.g., "I consent to: {purpose} for patient: {patientId}")
-      // 2. Sign the message using signMessage
-      // 3. Call apiService.createConsent with patientId, purpose, account, and signature
-      // 4. Refresh consents and reset form
+      // Create a message combining consent details for signing
+      const message = `I consent to: ${formData.purpose} for patient: ${formData.patientId}`;
+
+      // Sign the message using MetaMask (requires user confirmation)
+      const signature = await signMessage(message);
+
+      // Submit consent data to backend with wallet signature
+      await apiService.createConsent({
+        patientId: formData.patientId,
+        purpose: formData.purpose,
+        walletAddress: account,
+        signature: signature // Blockchain-verified signature
+      });
+
+      // Reset form and refresh list on success
+      await fetchConsents();
+      setFormData({
+        patientId: '',
+        purpose: ''
+      });
+      setShowCreateForm(false);
+      alert('Consent created successfully!');
     } catch (err) {
       alert('Failed to create consent: ' + err.message);
     }
   };
 
-  // TODO: Implement updateConsentStatus function
-  // This should update a consent's status (e.g., from pending to active)
-  const handleUpdateStatus = async (consentId, newStatus) => {
+  /**
+   * Updates a consent's status (e.g., from pending to active)
+   * Called when user approves a pending consent
+   * 
+   * @async
+   * @function handleUpdateStatus
+   * @param {string} consentId - ID of the consent to update
+   * @returns {Promise<void>}
+   */
+  const handleUpdateStatus = async (consentId) => {
     try {
-      // TODO: Call apiService.updateConsent to update the status
-      // TODO: Refresh consents list
+      // Call API to update consent status
+      await apiService.updateConsent(consentId, { status: "active" });
+
+      // Refresh consent list to reflect changes
+      fetchConsents();
     } catch (err) {
       alert('Failed to update consent: ' + err.message);
     }
   };
 
+  // Loading state UI
   if (loading) {
     return (
       <div className="consent-management-container">
@@ -74,29 +153,43 @@ const ConsentManagement = ({ account }) => {
     );
   }
 
+  // Error state UI
+  if (error) {
+    return (
+      <div className="consent-management-container">
+        <div className="error">Error: {error}</div>
+      </div>
+    );
+  }
+
+  // Main component rendering
   return (
     <div className="consent-management-container">
+      {/* Header with title and create button */}
       <div className="consent-header">
         <h2>Consent Management</h2>
         <button
           className="create-btn"
           onClick={() => setShowCreateForm(!showCreateForm)}
-          disabled={!account}
+          disabled={!account} // Disabled without wallet connection
         >
           {showCreateForm ? 'Cancel' : 'Create New Consent'}
         </button>
       </div>
 
+      {/* Warning message if wallet is not connected */}
       {!account && (
         <div className="warning">
           Please connect your MetaMask wallet to manage consents
         </div>
       )}
 
+      {/* Create Consent Form - Only shown when toggled and wallet is connected */}
       {showCreateForm && account && (
         <div className="create-consent-form">
           <h3>Create New Consent</h3>
           <form onSubmit={handleCreateConsent}>
+            {/* Patient ID input field */}
             <div className="form-group">
               <label>Patient ID</label>
               <input
@@ -107,6 +200,8 @@ const ConsentManagement = ({ account }) => {
                 placeholder="e.g., patient-001"
               />
             </div>
+
+            {/* Purpose dropdown field */}
             <div className="form-group">
               <label>Purpose</label>
               <select
@@ -121,6 +216,8 @@ const ConsentManagement = ({ account }) => {
                 <option value="Insurance Provider Access">Insurance Provider Access</option>
               </select>
             </div>
+
+            {/* Submit button - Triggers wallet signature prompt */}
             <button type="submit" className="submit-btn">
               Sign & Create Consent
             </button>
@@ -128,42 +225,48 @@ const ConsentManagement = ({ account }) => {
         </div>
       )}
 
-      <div className="consent-filters">
-        <button
-          className={filterStatus === 'all' ? 'active' : ''}
-          onClick={() => setFilterStatus('all')}
-        >
-          All
-        </button>
-        <button
-          className={filterStatus === 'active' ? 'active' : ''}
-          onClick={() => setFilterStatus('active')}
-        >
-          Active
-        </button>
-        <button
-          className={filterStatus === 'pending' ? 'active' : ''}
-          onClick={() => setFilterStatus('pending')}
-        >
-          Pending
-        </button>
-      </div>
+      {/* Consents list or empty state */}
+      {consents.length === 0 ? (
+        <p>No consents found.</p>
+      ) : (
+        <>
+          {/* Filter buttons for consent status */}
+          <div className="consent-filters">
+            <button
+              className={filterStatus === 'all' ? 'active' : ''}
+              onClick={() => setFilterStatus('all')}
+            >
+              All
+            </button>
+            <button
+              className={filterStatus === 'active' ? 'active' : ''}
+              onClick={() => setFilterStatus('active')}
+            >
+              Active
+            </button>
+            <button
+              className={filterStatus === 'pending' ? 'active' : ''}
+              onClick={() => setFilterStatus('pending')}
+            >
+              Pending
+            </button>
+          </div>
 
-      {/* TODO: Display consents list */}
-      <div className="consents-list">
-        {/* Your implementation here */}
-        {/* Map through consents and display them */}
-        {/* Show: patientId, purpose, status, createdAt, blockchainTxHash */}
-        {/* Add buttons to update status for pending consents */}
-        <div className="placeholder">
-          <p>Consent list will be displayed here</p>
-          <p>Implement the consent list rendering</p>
-        </div>
-      </div>
+          {/* Render consent cards for each consent */}
+          <div className="consents-list">
+            {consents.map((consent) => (
+              <div key={consent.id}>
+                <ConcentCard
+                  consent={consent}
+                  onUpdateStatus={handleUpdateStatus}
+                />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
 export default ConsentManagement;
-
-

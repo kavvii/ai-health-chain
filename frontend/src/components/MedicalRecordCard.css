@@ -1,0 +1,168 @@
+.record-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.record-card:hover {
+    border-color: #6366f1;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+}
+
+.record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+}
+
+/* Added styles for new record header layout */
+.record-header-left {
+    flex: 1;
+}
+
+.record-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #ede9fe;
+    color: #6366f1;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.record-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 6px 0;
+}
+
+.record-type {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 4px 0;
+}
+
+.record-date {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Updated status badge with icon */
+.record-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.record-status.verified {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.record-status.completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.record-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Added styles for full-width record items */
+.record-item-full {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.record-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+/* Added grid for record details */
+.record-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.record-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    min-width: fit-content;
+}
+
+.record-value {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+/* Added styles for description and hash */
+.record-description {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.record-hash {
+    font-family: monospace;
+    font-size: 12px;
+    word-break: break-all;
+    background: #f9fafb;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+}
+
+.expand-button {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    color: #6366f1;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s;
+}
+
+.expand-button:hover {
+    color: #4f46e5;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .record-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* Added responsive styling for details grid */
+    .record-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
